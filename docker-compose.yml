@@ -1,0 +1,35 @@
+version: "2"
+
+services:
+  app:
+    build: .
+    volumes:
+      - "$HOME/.ssh:/tmp/host-ssh"
+      - "$PWD:/app"
+    environment:
+      DB_HOST: ruby_beau-psql
+      DB_USERNAME: username
+      DB_PASSWORD: password
+      DB_DATABASE: dev
+      PORT: 4000
+      RAILS_ENV: development
+    networks:
+      - internal
+    ports:
+      - "4000:4000"
+    links:
+      - postgres
+    command: ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+
+  postgres:
+    image: postgres:9.6
+    container_name: ruby_beau-psql
+    environment:
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
+    networks:
+      - internal
+#    ports:
+#      - "5432:5432"
+networks:
+  internal:

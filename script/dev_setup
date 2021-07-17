@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -eu
+
+echo -e "\nRemoving existing containers..."
+docker-compose down
+
+echo -e "\nBuilding a base image..."
+docker-compose build --pull
+
+echo -e "\nInstalling gems..."
+docker-compose run --rm app bundle install
+docker-compose run --rm app yarn install --check-files
+
+echo -e "Setup test database"
+docker-compose run -e SCHEMA=db/schema.rb -e RAILS_ENV=test --rm app bundle exec rake db:reset
+
+echo -e "\nShowing ps..."
+docker-compose ps

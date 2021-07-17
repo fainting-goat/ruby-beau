@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+docker-compose run -e SCHEMA=db/testing_schema.rb -e RAILS_ENV=test --rm app bundle exec rake db:migrate
