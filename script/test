@@ -2,4 +2,4 @@
 
 set -euo pipefail
 
-docker-compose -f docker-compose.test.yml run --rm test mix test $@
+docker-compose -f docker-compose.yml run --rm app bundle exec rspec $@
