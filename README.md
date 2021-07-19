@@ -1,24 +1,12 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is built on Rails, so to run the program you'll need to startup the server.  
+The assumption is that this is part of a bigger process, either an internal admin app or an API.
+ 
+To run, you'll need Docker.
 
-Things you may want to cover:
+* script/dev_setup
 
-* Ruby version
+* script/dev_server
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+* visit localhost:4000

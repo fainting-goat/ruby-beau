@@ -2,9 +2,15 @@ require 'rails_helper'
 
 RSpec.describe FileParser do
   let(:parsed_file) {
-    [["Beau", "is", "the", " best", "best", "best", " dog\n"],
-     ["he", "is", "just", " super", "super", " super", "great"]]
+    [["Beau", " Dog", " 1/8/88", "  1234 ", " 1/8/88", " 1/8/88", "  123456789\n"],
+     ["Miranova", " Cat", " 1/8/88", "  35325 ", " 1/8/88", "  1/8/88", " 123456789"]]
   }
+  let(:error_stub) { double() }
+
+  before do
+    error_stub.stub(:report_error).with(anything(), anything(), anything())
+    error_stub.stub(:report_warning).with(anything(), anything(), anything())
+  end
 
   describe 'get_file_contents' do
     let(:filename) { 'spec/fixtures/test_file.txt' }
@@ -16,13 +22,8 @@ RSpec.describe FileParser do
   end
 
   describe 'clean_contents' do
-    let(:phone_numbers) {
-      [['1', '2', '3', '4', '5', '6', '13039873345'],
-       ['1', '2', '3', '4', '5', '6', '444-555-9877'],
-       ['1', '2', '3', '4', '5', '6', '(303) 887 3456']]
-    }
     it 'removes whitespace' do
-      expect(clean_contents(parsed_file)[0][3]).to eq("best")
+      expect(clean_contents(parsed_file, error_stub)[0][3]).to eq("35325")
     end
 
     it 'drops lines that fail validation' do
@@ -48,9 +49,9 @@ RSpec.describe FileParser do
 
   describe 'add_country_code' do
     it 'adds country code' do
-      expect(add_country_code('13039873345')).to eq("13039873345")
-      expect(add_country_code('4445559877')).to eq("14445559877")
-      expect(add_country_code('3038873456')).to eq("13038873456")
+      expect(add_country_code('13039873345', error_stub, 'junk')).to eq("13039873345")
+      expect(add_country_code('4445559877', error_stub, 'junk')).to eq("14445559877")
+      expect(add_country_code('3038873456', error_stub, 'junk')).to eq("13038873456")
     end
 
     it 'reports an error if the country code is incorrect' do
@@ -80,7 +81,7 @@ RSpec.describe FileParser do
   # so right now it's just dumping the results so I can look at them
   describe 'clean_contents does all the things' do
     it 'does everything' do
-      puts clean_contents(get_file_contents('input.csv'))
+      puts clean_contents(get_file_contents('input.csv'), error_stub)
     end
   end
 end

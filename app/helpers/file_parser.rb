@@ -14,6 +14,7 @@ module FileParser
   REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, DOB, MEMBER_ID, EFFECTIVE_DATE]
 
   # I'm not a huge fan of having the errors object passed in here like this
+  # this method is also pretty beefy
   # let's live with this situation until tests are written so refactoring will be safer
   # even if tests are moved to a new file, at least they'll be known good tests first
   def clean_contents(contents, errors)
@@ -37,7 +38,7 @@ module FileParser
       end
 
       line[PHONE_NUMBER] = remove_non_integers(line[PHONE_NUMBER])
-      line[PHONE_NUMBER] = add_country_code(line[PHONE_NUMBER])
+      line[PHONE_NUMBER] = add_country_code(line[PHONE_NUMBER], errors, line)
     end
   end
 
@@ -55,10 +56,22 @@ module FileParser
     clean_item
   end
 
-  def add_country_code(item)
-    # TODO check if the first number is a 1 and error if not
-    # TODO check if the proper length and error if not
-    item.length == 10 ? '1' + item : item
+  # again, I dislike passing in errors AND the line, but save refactoring this out until tests exist
+  def add_country_code(item, errors, line)
+    case item.length
+    when 10
+      '1' + item
+    when 11
+      if item[0].eql?('1')
+        item
+      else
+        errors.report_warning(line, PHONE_NUMBER, "invalid phone number")
+        ''
+      end
+    else
+      errors.report_warning(line, PHONE_NUMBER, "invalid phone number")
+      ''
+    end
   end
 
   def transform_dates(item)
@@ -66,11 +79,11 @@ module FileParser
 
     # TODO handle other formats/unsupported formats/better default handling if this fails
     begin
-    date = if item.include?('/')
-             Date.strptime(item, '%m/%d/%y')
-           elsif item.include?('-')
-             Date.strptime(item, '%m-%d-%y')
-           end
+      date = if item.include?('/')
+               Date.strptime(item, '%m/%d/%y')
+             elsif item.include?('-')
+               Date.strptime(item, '%m-%d-%y')
+             end
     rescue ArgumentError
       date = Date.parse(item) # hope Ruby can figure it out
     end
