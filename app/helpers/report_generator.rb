@@ -7,21 +7,17 @@ module ReportGenerator
 
   # TODO: this could probably use a better name
   def handle_input_file(input_file = DEFAULT_FILE, output_file = DEFAULT_OUTPUT, report_file = DEFAULT_REPORT)
-    create_output(input_file, output_file)
-    create_report(report_file)
+    errors = ReportErrors.new()
+
+    create_output(input_file, output_file, errors)
+    errors.write_report(report_file)
   end
 
   # can accept a dynamic filename, but defaults to the one provided in the exercise
-  def create_output(filename, report_filename)
+  def create_output(filename, report_filename, errors)
     file_contents = get_file_contents(filename)
-    cleaned_contents = clean_contents(file_contents)
+    cleaned_contents = clean_contents(file_contents, errors)
     convert_to_csv(cleaned_contents, report_filename)
-  end
-
-  def create_report(filename)
-    File.open(filename, 'w+') do |f|
-      f.puts "Everything processed fine because there's no error handling yet!"
-    end
   end
 
   private

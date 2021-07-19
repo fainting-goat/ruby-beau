@@ -7,4 +7,6 @@ They will also be displayed below:
 <% end %>
 
 <h2>Report</h2>
-<%= File.read('report.txt') %>
+<% File.readlines('report.txt').each do |line| %>
+  <br><%= line %>
+<% end %>

@@ -11,12 +11,20 @@ module FileParser
   EXPIRY_DATE = 5
   PHONE_NUMBER = 6
 
-  def clean_contents(contents)
+  REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, DOB, MEMBER_ID, EFFECTIVE_DATE]
+
+  def clean_contents(contents, errors)
     # drop the first line since it's a column header
     contents.delete_at(0)
 
-    #first go through line by line to get rid of whitespace
+    valid_lines = []
     contents.each do |line|
+      errored = validate_required_fields(line, errors)
+      valid_lines << line unless errored
+    end
+
+    #first go through line by line to get rid of whitespace
+    valid_lines.each do |line|
       for i in 0..6 do
         trim_whitespace!(line[i])
       end
@@ -67,11 +75,26 @@ module FileParser
     date.iso8601
   end
 
+  def validate_required_fields(line, errors)
+    errored = false
+    REQUIRED_FIELDS.each do |field|
+      if line[field].empty?
+        errors.report_error(line, field, "missing required field")
+        errored = true
+      end
+    end
+    errored
+  end
+
   def get_file_contents(filename)
     text = []
     File.readlines(filename).each do |line|
       text << line.split(',')
     end
     text
+  end
+
+  def report_failure(line, field, error)
+
   end
 end
