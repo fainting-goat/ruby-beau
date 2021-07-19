@@ -13,6 +13,9 @@ module FileParser
 
   REQUIRED_FIELDS = [FIRST_NAME, LAST_NAME, DOB, MEMBER_ID, EFFECTIVE_DATE]
 
+  # I'm not a huge fan of having the errors object passed in here like this
+  # let's live with this situation until tests are written so refactoring will be safer
+  # even if tests are moved to a new file, at least they'll be known good tests first
   def clean_contents(contents, errors)
     # drop the first line since it's a column header
     contents.delete_at(0)
@@ -92,9 +95,5 @@ module FileParser
       text << line.split(',')
     end
     text
-  end
-
-  def report_failure(line, field, error)
-
   end
 end

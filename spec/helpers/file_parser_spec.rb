@@ -10,7 +10,7 @@ RSpec.describe FileParser do
     let(:filename) { 'spec/fixtures/test_file.txt' }
     let(:content) {}
 
-    it 'returns the file contents' do
+    it 'returns the file contents as a nested array' do
       expect(get_file_contents(filename)).to eq(parsed_file)
     end
   end
@@ -23,6 +23,18 @@ RSpec.describe FileParser do
     }
     it 'removes whitespace' do
       expect(clean_contents(parsed_file)[0][3]).to eq("best")
+    end
+
+    it 'drops lines that fail validation' do
+      fail
+    end
+
+    it 'transforms the date fields' do
+      fail
+    end
+
+    it 'correctly sanitizes phone numbers' do
+      fail
     end
   end
 
@@ -40,6 +52,10 @@ RSpec.describe FileParser do
       expect(add_country_code('4445559877')).to eq("14445559877")
       expect(add_country_code('3038873456')).to eq("13038873456")
     end
+
+    it 'reports an error if the country code is incorrect' do
+      fail
+    end
   end
 
   describe 'transform_dates' do
@@ -48,11 +64,21 @@ RSpec.describe FileParser do
       expect(transform_dates('11/11/17')).to eq("2017-11-11")
       expect(transform_dates('9-30-19')).to eq("2019-09-30")
     end
+
+    it 'defaults to Date.parse if the other parsing fails' do
+      fail
+    end
+  end
+
+  describe 'validate_required_fields' do
+    it 'returns false if a required field is missing' do
+      fail
+    end
   end
 
   # this would normally be an integration test, probably in its own file, but I want to move on to further validations
   # so right now it's just dumping the results so I can look at them
-  describe 'clean_contents' do
+  describe 'clean_contents does all the things' do
     it 'does everything' do
       puts clean_contents(get_file_contents('input.csv'))
     end
