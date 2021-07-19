@@ -49,4 +49,12 @@ RSpec.describe FileParser do
       expect(transform_dates('9-30-19')).to eq("2019-09-30")
     end
   end
+
+  # this would normally be an integration test, probably in its own file, but I want to move on to further validations
+  # so right now it's just dumping the results so I can look at them
+  describe 'clean_contents' do
+    it 'does everything' do
+      puts clean_contents(get_file_contents('input.csv'))
+    end
+  end
 end
