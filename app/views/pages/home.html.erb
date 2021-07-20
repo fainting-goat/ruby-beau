@@ -1,1 +1,12 @@
-Hello
+Hello!  The output and report files have been automatically created.  You can see the results in the root directory of this application.
+They will also be displayed below:
+
+<h2>Output</h2>
+<% File.readlines('output.csv').each do |line| %>
+    <br><%= line %>
+<% end %>
+
+<h2>Report</h2>
+<% File.readlines('report.txt').each do |line| %>
+  <br><%= line %>
+<% end %>
